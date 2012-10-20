@@ -1,10 +1,12 @@
-module LifeGame (
+-- ライフゲームの実装
+module Ahisame.LifeGame (
  width, height
  , sampleInit, sampleSeq
  , infSeq
  , Pos, Board
  , showBoard, toString
  , next, after
+ , animationInf, animation
 ) where
 
 import System.IO
@@ -12,11 +14,27 @@ import Data.List
 import Text.Printf
 import Control.Applicative
 
+import qualified Ahisame.Console as Console
+
+-- 動作サンプル
+-- 呼び出すと、アニメーションでライフゲームが表示されます
+exec :: IO ()
+exec = animationInf 100 sampleInit 
+
 width :: Int
-width = 5
+width = 10
 
 height :: Int
-height = 5
+height = 8
+
+-- ライフゲームアニメーションを実行
+-- 止まらないので注意
+animationInf :: Console.Millis -> Board -> IO ()
+animationInf w init = Console.animation w $ toString <$> infSeq init 
+
+-- 有限回数nで停止するライフゲームアニメーションを実行
+animation :: Console.Millis -> Board -> Int -> IO ()
+animation w init n = Console.animation w $ take n $ toString <$> infSeq init
 
 sampleInit :: Board
 sampleInit = [(4,2), (2,3), (4,3), (3,4), (4,4)]
